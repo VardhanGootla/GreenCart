@@ -54,6 +54,27 @@ export const AppContextProvider = ({ children }) => {
     setCartItems(cartData);
   };
 
+// get cart item coutn
+const getCartCount = () =>{
+  let totalCount = 0;
+  for(const item in cartItems){
+    totalCount += cartItems[item];
+  }
+  return totalCount;
+}
+
+//Get cart total amout
+const getCartAmount = () =>{
+  let totalAmout = 0;
+  for(const items in cartItems){
+   let itemInfo = products.find((product => product._id === items))
+   if(cartItems[items] > 0) {
+       totalAmout += itemInfo.offerPrice * cartItems[items]
+   }
+}
+return Math.floor(totalAmout * 100)/100;
+}
+
   // Load products on mount
   useEffect(() => {
     fetchProducts();
@@ -75,6 +96,8 @@ export const AppContextProvider = ({ children }) => {
     cartItems,
     searchQuery,
     setSearchQuery,
+    getCartAmount,
+    getCartCount
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

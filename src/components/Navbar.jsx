@@ -5,18 +5,18 @@ import { useAppContext } from '../context/AppContext';
 
 const Navbar = () => {
   const [open, setOpen] = React.useState(false);
-  const { user, setUser, setShowUserLogin, navigate,setSearchQuery,searchQuery } = useAppContext();
+  const { user, setUser, setShowUserLogin, navigate,setSearchQuery,searchQuery,getCartCount } = useAppContext();
 
   const logout = async () => {
     setUser(null);
     navigate('/');
   };
 
-useEffect(()=>{
-if(searchQuery.length > 0){
-  navigate("/products")
-}
-},[searchQuery])
+  useEffect(()=>{
+    if(searchQuery.length > 0){
+      navigate("/products")
+    }
+  },[searchQuery])
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -42,12 +42,12 @@ if(searchQuery.length > 0){
           <img src={assets.search_icon} alt="search" className="w-4 h-4" />
         </div>
 
-        {/* Cart */}
-        <div onClick={() => navigate("/cart")} className="relative cursor-pointer">
+        {/* Cart (Desktop) */}
+        <div onClick={() => navigate("/cart")} className="relative cursor-pointer inline-block">
           <img src={assets.nav_cart_icon} alt="Cart" className="w-6 opacity-80" />
-          <button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
-            3
-          </button>
+          <span className="absolute -top-2 -right-3 flex items-center justify-center text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
+            {getCartCount()}
+          </span>
         </div>
 
         {/* Login / Logout */}
@@ -60,25 +60,29 @@ if(searchQuery.length > 0){
           </button>
         ) : (
           <div className='relative group'>
- <img src={assets.profile_icon} className='w-10' alt=''/>
- <ul className='hidden group-hover:block absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40'>
-  <li onClick={() => navigate("my-orders")} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>My Order</li>
-  <li onClick={logout} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>Logout</li>
-
- </ul>
+            <img src={assets.profile_icon} className='w-10' alt=''/>
+            <ul className='hidden group-hover:block absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40'>
+              <li onClick={() => navigate("my-orders")} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>My Order</li>
+              <li onClick={logout} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>Logout</li>
+            </ul>
           </div>
-        
         )}
       </div>
 
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setOpen(!open)}
-        aria-label="Menu"
-        className="sm:hidden"
-      >
-        <img src={assets.menu_icon} alt="Menu" />
-      </button>
+      {/* Mobile Menu Button + Cart */}
+      <div className='flex items-center gap-6 sm:hidden'>
+        {/* Cart (Mobile) */}
+        <div onClick={() => navigate("/cart")} className="relative cursor-pointer inline-block">
+          <img src={assets.nav_cart_icon} alt="Cart" className="w-6 opacity-80" />
+          <span className="absolute -top-2 -right-3 flex items-center justify-center text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
+            {getCartCount()}
+          </span>
+        </div>
+
+        <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu">
+          <img  src={assets.menu_icon} alt=''/>
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       {open && (
